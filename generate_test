@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo -e "#!/bin/sh\nfor test in $1\ndo\n\t./\$test\ndone" > test
+chmod +x test
