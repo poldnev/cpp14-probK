@@ -6,6 +6,7 @@
 #include <string>
 #include <functional>
 #include <algorithm>
+#include <utility>
 
 #include "utils.h"
 #include "expression.h"
@@ -216,6 +217,20 @@ typename Expression::LexemConstIterator Expression::begin() const {
 
 typename Expression::LexemConstIterator Expression::end() const {
     return lexems.end();
+}
+
+bool Expression::operator==(const Expression &other) const {
+    if (type != other.type || lexems.size() != other.lexems.size()) {
+        return false;
+    }
+
+    for (size_t lexem_index = 0; lexem_index < lexems.size(); ++lexem_index) {
+        if (!lexems[lexem_index]->equalTo(other.lexems[lexem_index].get())) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 

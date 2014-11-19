@@ -1,12 +1,12 @@
 .PHONY: all clean test
 
 CC = clang++
-CFLAGS = -std=c++1y -O3 -Weverything -Wno-c++98-compat -Wno-missing-prototypes
+CFLAGS = -std=c++1y -O3 -Weverything -Wno-c++98-compat -Wno-missing-prototypes -Wno-weak-vtables -Wno-padded -Wno-exit-time-destructors -Wno-global-constructors
 LDFLAGS = -s
 MAIN_CFILES = process_table.cpp utils.cpp coordinate.cpp sparse_table.cpp expression.cpp
 MAIN_HFILES = process_table.h utils.h coordinate.h sparse_table.h expression.h
 MAIN_OBJECTS = $(MAIN_CFILES:.cpp=.o)
-TEST_CFILES = unit_test.cpp test_sparse_table.cpp test_make_lexem_pointer.cpp
+TEST_CFILES = unit_test.cpp test_sparse_table.cpp test_make_lexem_pointer.cpp test_parse_expression.cpp
 TEST_HFILES = unit_test.h
 TEST_OBJECTS = $(TEST_CFILES:.cpp=.o)
 CFILES = $(MAIN_CFILES) $(TEST_CFILES)
@@ -14,7 +14,7 @@ HFILES = $(MAIN_HFILES) $(TEST_HFILES)
 OBJECTS = $(MAIN_OBJECTS) $(TEST_OBJECTS)
 
 MAIN_TARGET = process_table
-TEST_TARGETS = test_sparse_table test_make_lexem_pointer
+TEST_TARGETS = test_sparse_table test_make_lexem_pointer test_parse_expression
 
 all: $(MAIN_TARGET) test
 
@@ -31,6 +31,9 @@ test_sparse_table: test_sparse_table.o unit_test.o coordinate.o sparse_table.o
 	$(CC) $(LDFLAGS) $^ -o $@
     
 test_make_lexem_pointer: test_make_lexem_pointer.o unit_test.o utils.o coordinate.o expression.o
+	$(CC) $(LDFLAGS) $^ -o $@
+    
+test_parse_expression: test_parse_expression.o unit_test.o utils.o coordinate.o expression.o
 	$(CC) $(LDFLAGS) $^ -o $@
    
 %.o : %.cpp

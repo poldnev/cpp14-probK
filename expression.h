@@ -109,6 +109,10 @@ class Expression
     using LexemConstIterator = std::vector<std::shared_ptr<LexemBase>>::const_iterator;
 public:
     Expression(ExpressionType type_tmp = ExpressionType::NONE);
+
+    template <typename... LexemsArgs>
+    Expression(ExpressionType type_tmp, LexemsArgs&&... lexems_args);
+
     ExpressionType getType() const;
     size_t getSize() const;
     void pushLexem(std::shared_ptr<LexemBase> lexem_pointer);
@@ -116,6 +120,7 @@ public:
     LexemIterator end();
     LexemConstIterator begin() const;
     LexemConstIterator end() const;
+    bool operator==(const Expression &other) const;
 };
 
 
@@ -125,6 +130,11 @@ Expression makeErrorExpression(const std::string &error_message);
 
 Expression parseExpression(const std::string &raw_expression);
 
+
+
+template <typename... LexemsArgs>
+Expression::Expression(ExpressionType type_tmp, LexemsArgs&&... lexems_args)
+    : type(type_tmp), lexems(std::forward<LexemsArgs>(lexems_args)...) {}
 
 
 #endif // EXPRESSION_H_INCLUDED
