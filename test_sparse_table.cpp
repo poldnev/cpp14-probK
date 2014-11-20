@@ -87,5 +87,12 @@ int main()
         }
     });
 
+    tester.runTest("2x5 without cells", {
+        2, 5, {}
+    });
+    tester.runTest("5x2 without cells", {
+        5, 2, {}
+    });
+
     return 0;
 }

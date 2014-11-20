@@ -27,12 +27,17 @@ class SparseTable
     {
         // column of next_iterator should be >= column
         typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator;
+        typename std::map<Coordinate2D, ValueType>::const_iterator end_iterator;
         int row;
         int column;
 
         bool isIteratorStrictlyHere() const;
     public:
-        FlattenCellIterator(typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator_tmp, int row_tmp, int column_tmp);
+        FlattenCellIterator(
+            typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator_tmp,
+            typename std::map<Coordinate2D, ValueType>::const_iterator end_iterator_tmp,
+            int row_tmp, int column_tmp
+        );
         FlattenCellIterator &operator++();
         FlattenCellIterator operator++(int);
         const ValueType &operator*() const;

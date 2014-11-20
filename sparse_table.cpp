@@ -31,14 +31,18 @@ void SparseTable<ValueType>::assertCoordinateInRange(const Coordinate2D &coordin
 
 template <typename ValueType>
 bool SparseTable<ValueType>::FlattenCellIterator::isIteratorStrictlyHere() const {
-    return row == next_iterator->first.row && column == next_iterator->first.column;
+    return
+        next_iterator != end_iterator
+        && row == next_iterator->first.row
+        && column == next_iterator->first.column;
 }
 
 template <typename ValueType>
 SparseTable<ValueType>::FlattenCellIterator::FlattenCellIterator(
     typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator_tmp,
+    typename std::map<Coordinate2D, ValueType>::const_iterator end_iterator_tmp,
     int row_tmp, int column_tmp
-) : next_iterator(next_iterator_tmp), row(row_tmp), column(column_tmp) {}
+) : next_iterator(next_iterator_tmp), end_iterator(end_iterator_tmp), row(row_tmp), column(column_tmp) {}
 
 template <typename ValueType>
 typename SparseTable<ValueType>::FlattenCellIterator &SparseTable<ValueType>::FlattenCellIterator::operator++() {
@@ -85,12 +89,12 @@ const auto &SparseTable<ValueType>::FlattenRow::operator[](const int column) con
 
 template <typename ValueType>
 typename SparseTable<ValueType>::FlattenCellIterator SparseTable<ValueType>::FlattenRow::begin() const {
-    return {table.table_values.lower_bound({row, 0}), row, 0};
+    return {table.table_values.lower_bound({row, 0}), table.table_values.end(), row, 0};
 }
 
 template <typename ValueType>
 typename SparseTable<ValueType>::FlattenCellIterator SparseTable<ValueType>::FlattenRow::end() const {
-    return {table.table_values.lower_bound({row + 1, 0}), row, table.width};
+    return {table.table_values.lower_bound({row + 1, 0}), table.table_values.end(), row, table.width};
 }
 
 template <typename ValueType>
