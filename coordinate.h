@@ -2,6 +2,7 @@
 #define COORDINATE_H_INCLUDED
 
 
+// Helper struct for using as index in SparseTable
 struct Coordinate2D
 {
     int row;

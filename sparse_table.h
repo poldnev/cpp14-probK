@@ -23,6 +23,7 @@ class SparseTable
 
     void assertCoordinateInRange(const Coordinate2D &coordinate) const;
 
+    // Iterator to cell of flattened table
     class FlattenCellIterator : std::iterator<std::forward_iterator_tag, ValueType, int>
     {
         // column of next_iterator should be >= column
@@ -45,6 +46,7 @@ class SparseTable
         bool operator!=(const FlattenCellIterator &other) const;
     };
 
+    // Row of flattened table
     class FlattenRow
     {
         const SparseTable &table;
@@ -56,6 +58,7 @@ class SparseTable
         FlattenCellIterator end() const;
     };
 
+    // Iterator to row of flattened table
     class FlattenRowIterator : std::iterator<std::random_access_iterator_tag, FlattenRow, int>
     {
         const SparseTable &table;

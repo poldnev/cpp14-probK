@@ -110,6 +110,7 @@ class Expression
 public:
     Expression(ExpressionType type_tmp = ExpressionType::NONE);
 
+    // Construct expression with given type and args of lexems constructor
     template <typename... LexemsArgs>
     Expression(ExpressionType type_tmp, LexemsArgs&&... lexems_args);
 
@@ -124,6 +125,7 @@ public:
 };
 
 
+// Parse lexem of given type from given string and return pointer to it
 std::shared_ptr<LexemBase> makeLexemPointer(LexemType lexem_type, const std::string &raw_lexem);
 
 Expression makeErrorExpression(const std::string &error_message);
