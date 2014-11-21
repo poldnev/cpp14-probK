@@ -12,27 +12,59 @@
 #include "sparse_table.h"
 #include "sparse_table.cpp"
 #include "expression.h"
+#include "logger.h"
 
 
 
 TextTable readTextTable(std::istream &in_stream) {
-    std::string temp;
     int height, width;
-    in_stream >> height >> width;
-    std::getline(in_stream, temp, '\n');
+
+    if (!(in_stream >> height >> width)) {
+        throw std::invalid_argument("First input line should contain two integers: table height and width");
+    }
+
+    if (height < 0 || width < 0) {
+        throw std::invalid_argument("Table height and width should be positive integers");
+    }
+    if (height == 0 || width == 0) {
+        log_warn("Table height or width is 0, do nothing");
+        return {};
+    }
+
     TextTable table(height, width);
+    std::string temp;
+
+    if (!std::getline(in_stream, temp, '\n')) {
+        log_warn("Table has 0 rows instead of ", height);
+        return table;
+    }
+    if (!temp.empty()) {
+        log_warn("Excess information in first line, ignore it");
+    }
+
     for (int row_index = 0; row_index < height; ++row_index) {
         std::string raw_row;
-        std::getline(in_stream, raw_row);
+
+        if (!std::getline(in_stream, raw_row) && row_index < height - 1) {
+            log_warn("Table has ", row_index + 1, " rows instead of ", height);
+            break;
+        }
+
         std::stringstream row_stream(raw_row);
+
         for (int column_index = 0; column_index < width; ++column_index) {
             std::string cell;
-            std::getline(row_stream, cell, '\t');
+
+            if (!std::getline(row_stream, cell, '\t') && column_index < width - 1) {
+                log_warn("Row ", row_index + 1, " has ", column_index + 1, " cells instead of ", width);
+                break;
+            }
             if (!cell.empty()) {
                 table(row_index, column_index) = cell;
             }
         }
     }
+
     return table;
 }
 
@@ -172,13 +204,23 @@ void printTextTable(const TextTable &table, std::ostream &out_stream) {
 
 
 int main() {
-    auto raw_table = readTextTable();
 
-    auto parsed_table = parseRawTable(raw_table);
-    calculateParsedTable(parsed_table);
-    auto printed_table = makePrintedTable(parsed_table);
+    try {
 
-    printTextTable(printed_table);
+        auto raw_table = readTextTable();
 
-    return 0;
+        auto parsed_table = parseRawTable(raw_table);
+        calculateParsedTable(parsed_table);
+        auto printed_table = makePrintedTable(parsed_table);
+
+        printTextTable(printed_table);
+
+    }  catch (const std::exception &exception) {
+
+        log_error(exception.what());
+        return EXIT_FAILURE;
+
+    }
+
+    return EXIT_SUCCESS;
 }

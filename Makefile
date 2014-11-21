@@ -4,7 +4,7 @@ CC = clang++
 CFLAGS = -std=c++1y -O3 -Weverything -Wno-c++98-compat -Wno-missing-prototypes -Wno-weak-vtables -Wno-padded -Wno-exit-time-destructors -Wno-global-constructors
 LDFLAGS = -s
 MAIN_CFILES = process_table.cpp utils.cpp coordinate.cpp sparse_table.cpp expression.cpp
-MAIN_HFILES = process_table.h utils.h coordinate.h sparse_table.h expression.h
+MAIN_HFILES = process_table.h utils.h coordinate.h sparse_table.h expression.h logger.h
 MAIN_OBJECTS = $(MAIN_CFILES:.cpp=.o)
 TEST_CFILES = unit_test.cpp test_sparse_table.cpp test_make_lexem_pointer.cpp test_parse_expression.cpp
 TEST_HFILES = unit_test.h
