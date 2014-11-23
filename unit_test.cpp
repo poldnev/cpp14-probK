@@ -13,13 +13,16 @@ UnitTester<TestType>::UnitTester(const std::string &plan_name_tmp, std::ostream 
 template <typename TestType>
 void UnitTester<TestType>::runTest(const std::string &test_name, const TestType &test) {
     if (next_test_index == 0) {
-        stream << std::endl << "=== Plan " << plan_name << " ===" << std::endl;
+        stream << std::endl << "\033[1m=== Plan " << plan_name << " ===\033[0m" << std::endl;
     }
 
     ++next_test_index;
     bool result = checkTest(test);
 
-    stream << std::setw(3) << next_test_index << ". " << (result ? "pass" : "fail") << ": " << test_name << std::endl;
+    std::string result_name = (result ? "pass" : "fail");
+    std::string formatting = (result ? "32;1" : "31;1");
+
+    stream << "\033[" << formatting << "m" << std::setw(3) << next_test_index << ". " << result_name << ": " << test_name << "\033[0m" << std::endl;
 }
 
 

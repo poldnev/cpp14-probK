@@ -81,8 +81,7 @@ int parseNumber(const std::string &raw_number) {
         throw std::invalid_argument(message_stream.str());
     }
 
-    std::stringstream number_stream;
-    number_stream << raw_number;
+    std::stringstream number_stream(raw_number);
     int number;
     number_stream >> number;
     return number;
