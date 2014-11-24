@@ -1,0 +1,5 @@
+#!/bin/sh
+for test in test_sparse_table test_make_lexem_pointer test_parse_expression test_read_text_table test_calculate_parsed_table
+do
+	./$test
+done

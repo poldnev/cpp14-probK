@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <set>
 
 #include "sparse_table.h"
 #include "expression.h"

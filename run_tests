@@ -1,0 +1,22 @@
+#!/bin/sh
+
+for test_file in $@
+do
+    echo -e "\n\033[1m=== Test $test_file ===\033[0m"
+	
+    echo -e "\n\033[1m= Input =\033[0m"
+    cat $test_file
+	
+    echo -e "\n\n\033[1m= Output =\033[0m"
+    ./process_table < $test_file 2> /tmp/process_table.err
+	
+	if [ -s "/tmp/process_table.err" ]
+	then
+		echo -e "\n\033[1m= Stderr =\033[0m"
+		cat /tmp/process_table.err
+	fi
+	
+	rm /tmp/process_table.err
+	
+	echo
+done

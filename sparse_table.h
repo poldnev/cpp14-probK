@@ -27,16 +27,16 @@ class SparseTable
     class FlattenCellIterator : std::iterator<std::forward_iterator_tag, ValueType, int>
     {
         // column of next_iterator should be >= column
-        typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator;
-        typename std::map<Coordinate2D, ValueType>::const_iterator end_iterator;
+        CellIterator next_iterator;
+        CellIterator end_iterator;
         int row;
         int column;
 
         bool isIteratorStrictlyHere() const;
     public:
         FlattenCellIterator(
-            typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator_tmp,
-            typename std::map<Coordinate2D, ValueType>::const_iterator end_iterator_tmp,
+            CellIterator next_iterator_tmp,
+            CellIterator end_iterator_tmp,
             int row_tmp, int column_tmp
         );
         FlattenCellIterator &operator++();
@@ -90,6 +90,18 @@ public:
     int getHeight() const;
     int getWidth() const;
 
+    bool operator==(const SparseTable &other) const;
+
+    struct Entry
+    {
+        using value_type = ValueType;
+
+        Coordinate2D coordinate;
+        ValueType value;
+
+        Entry(const Coordinate2D &coordinate_tmp, const ValueType &value_tmp);
+    };
+
     // Access to cell with coordinates constructed with given arguments
     template <typename... CoordinateArgs>
     ValueType &operator()(CoordinateArgs&&... coordinate_args);
@@ -111,6 +123,11 @@ typename SparseTable<ValueType>::FlattenRowIterator operator+(
     int delta,
     const typename SparseTable<ValueType>::FlattenRowIterator &iterator
 );
+
+
+template <typename InputIterator>
+SparseTable<typename std::iterator_traits<InputIterator>::value_type::value_type>
+makeSparseTable(int height, int width, InputIterator first, InputIterator last);
 
 
 #endif // SPARSE_TABLE_H_INCLUDED

@@ -24,6 +24,8 @@ public:
 
 std::string makeErrorMessage(const std::string &error_message);
 
+std::istream& getline(std::istream& input_stream, std::string& string);
+
 
 
 #endif // UTILS_H_INCLUDED

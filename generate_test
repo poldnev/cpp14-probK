@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo -e "#!/bin/sh\nfor test in $1\ndo\n\t./\$test\ndone" > test
-chmod +x test
+echo -e "#!/bin/sh\nfor test in $1\ndo\n\t./\$test\ndone" > run_unit_test
+chmod +x run_unit_test

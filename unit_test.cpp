@@ -3,6 +3,7 @@
 #include <iomanip>
 
 #include "unit_test.h"
+#include "coordinate.h"
 
 
 template <typename TestType>

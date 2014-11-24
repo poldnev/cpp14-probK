@@ -30,6 +30,10 @@ void SparseTable<ValueType>::assertCoordinateInRange(const Coordinate2D &coordin
 
 
 template <typename ValueType>
+SparseTable<ValueType>::Entry::Entry(const Coordinate2D &coordinate_tmp, const ValueType &value_tmp)
+    : coordinate(coordinate_tmp), value(value_tmp) {}
+
+template <typename ValueType>
 bool SparseTable<ValueType>::FlattenCellIterator::isIteratorStrictlyHere() const {
     return
         next_iterator != end_iterator
@@ -39,8 +43,8 @@ bool SparseTable<ValueType>::FlattenCellIterator::isIteratorStrictlyHere() const
 
 template <typename ValueType>
 SparseTable<ValueType>::FlattenCellIterator::FlattenCellIterator(
-    typename std::map<Coordinate2D, ValueType>::const_iterator next_iterator_tmp,
-    typename std::map<Coordinate2D, ValueType>::const_iterator end_iterator_tmp,
+    CellIterator next_iterator_tmp,
+    CellIterator end_iterator_tmp,
     int row_tmp, int column_tmp
 ) : next_iterator(next_iterator_tmp), end_iterator(end_iterator_tmp), row(row_tmp), column(column_tmp) {}
 
@@ -238,6 +242,14 @@ int SparseTable<ValueType>::getWidth() const {
 }
 
 template <typename ValueType>
+bool SparseTable<ValueType>::operator==(const SparseTable<ValueType> &other) const {
+    return
+        height == other.height
+        && width == other.width
+        && table_values == other.table_values;
+}
+
+template <typename ValueType>
 template <typename... CoordinateArgs>
 ValueType &SparseTable<ValueType>::operator()(CoordinateArgs&&... coordinate_args) {
     Coordinate2D coordinate(std::forward<CoordinateArgs>(coordinate_args)...);
@@ -265,5 +277,16 @@ IteratorRange<typename SparseTable<ValueType>::CellIterator> SparseTable<ValueTy
 template <typename ValueType>
 IteratorRange<typename SparseTable<ValueType>::FlattenRowIterator> SparseTable<ValueType>::flatten() const {
     return {{*this, 0}, {*this, height}};
+}
+
+template <typename InputIterator>
+SparseTable<typename std::iterator_traits<InputIterator>::value_type::value_type>
+makeSparseTable(int height, int width, InputIterator first, InputIterator last) {
+    using ValueType = typename std::iterator_traits<InputIterator>::value_type::value_type;
+    SparseTable<ValueType> table(height, width);
+    for (const auto &entry : IteratorRange<InputIterator>(first, last)) {
+        table(entry.coordinate) = entry.value;
+    }
+    return table;
 }
 

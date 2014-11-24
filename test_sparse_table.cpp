@@ -8,14 +8,7 @@
 #include "sparse_table.cpp"
 
 
-struct SparseTableFlattenTestEntry
-{
-    Coordinate2D coordinate;
-    std::string value;
-
-    SparseTableFlattenTestEntry(const Coordinate2D &coordinate_tmp, const std::string &value_tmp)
-        : coordinate(coordinate_tmp), value(value_tmp) {}
-};
+using SparseTableFlattenTestEntry = SparseTable<std::string>::Entry;
 
 
 struct SparseTableFlattenTest

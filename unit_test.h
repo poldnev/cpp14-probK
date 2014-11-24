@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include "coordinate.h"
+
 
 template <typename TestType>
 class UnitTester

@@ -44,7 +44,7 @@ void print(FirstArg &&first_arg, Args&&... args) {
 
 template <typename... MessageArgs>
 void print_log_message(const std::string &log_level, const std::string &formatting, MessageArgs&&... message_args) {
-    print("\033[", formatting, ";1m[", log_level, "]\033[0m\033[", formatting, "m ", std::forward<MessageArgs>(message_args)...);
+    print("\033[", formatting, ";1m[", log_level, "]\033[0m\033[", formatting, "m ", std::forward<MessageArgs>(message_args)..., "\033[0m");
 }
 
 template <typename... MessageArgs>
