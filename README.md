@@ -10,5 +10,5 @@ To run table processing itself:
     
 To run unit tests:
 
-1. `make test`
-2. `./test`
+1. `make run_unit_test`
+2. `./run_unit_test`
