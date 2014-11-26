@@ -132,6 +132,8 @@ Expression makeErrorExpression(const std::string &error_message);
 
 Expression parseExpression(const std::string &raw_expression);
 
+int calculateArithmeticExpression(const Expression &expression);
+
 
 
 template <typename... LexemsArgs>

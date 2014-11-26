@@ -303,3 +303,53 @@ Expression parseExpression(const std::string &raw_expression) {
         return makeErrorExpression(exception.what());
     }
 }
+
+
+int calculateArithmeticExpression(const Expression &expression) {
+    int result = 0;
+    bool is_result_defined = false;
+    LexemType last_lexem_type = LexemType::OPERATION;
+    std::shared_ptr<LexemOperation> last_operation;
+
+    for (const auto &lexem_pointer : expression) {
+        if (!is_result_defined || last_lexem_type == LexemType::OPERATION) {  // Operand is needed
+
+            if (lexem_pointer->getType() == LexemType::OPERATION) {
+                throw std::invalid_argument("Operation in wrong place");
+            }
+            int lexem_value = 0;
+            if (lexem_pointer->getType() == LexemType::NUMBER) {
+                lexem_value = dynamic_cast<LexemNumber*>(lexem_pointer.get())->getNumber();
+            } else {
+                throw std::invalid_argument("Unimplemented lexem type");
+            }
+
+            if (!is_result_defined) {
+                result = lexem_value;
+                is_result_defined = true;
+            } else {
+                result = last_operation->getAction()(result, lexem_value);
+            }
+
+        } else {     // Operation is needed
+
+            if (lexem_pointer->getType() != LexemType::OPERATION) {
+                throw std::invalid_argument("Operation in wrong place");
+            }
+            last_operation = std::make_shared<LexemOperation>(dynamic_cast<LexemOperation*>(lexem_pointer.get())->getOperation());
+
+        }
+
+        last_lexem_type = lexem_pointer->getType();
+    }
+
+    if (last_lexem_type == LexemType::OPERATION) {
+        if (expression.getSize()) {
+            throw std::invalid_argument("Excess operation in the end");
+        } else {
+            throw std::invalid_argument("Empty expression");
+        }
+    }
+
+    return result;
+}

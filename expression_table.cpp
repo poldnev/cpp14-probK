@@ -93,70 +93,34 @@ int getProcessedArithmeticExpressionValue(const Expression &expression) {
 
 void calculateCell(ExpressionTable &table, std::set<Coordinate2D> &visited_coordinates, const Coordinate2D &coordinate) {
     visited_coordinates.insert(coordinate);
-    Expression &expression = table(coordinate);
+    Expression &current_expression = table(coordinate);
 
     try {
-        int result = 0;
-        bool is_result_defined = false;
-        LexemType last_lexem_type = LexemType::OPERATION;
-        std::shared_ptr<LexemOperation> last_operation;
 
-        for (const auto &lexem_pointer : expression) {
-            if (!is_result_defined || last_lexem_type == LexemType::OPERATION) {  // Operand is needed
+        Expression new_expression;
+        for (const auto &lexem_pointer : current_expression) {
+            if (lexem_pointer->getType() == LexemType::CELL_REFERENCE) {
 
-                if (lexem_pointer->getType() == LexemType::OPERATION) {
-                    throw std::invalid_argument("Operation in wrong place");
+                auto referred_coordinate = dynamic_cast<LexemCellReference*>(lexem_pointer.get())->getCoordinate();
+                const auto &referred_expression = table(referred_coordinate);
+                if (visited_coordinates.count(referred_coordinate) == 0 && referred_expression.getType() == ExpressionType::ARITHMETIC) {
+                    calculateCell(table, visited_coordinates, referred_coordinate);
                 }
-                int lexem_value = 0;
-                if (lexem_pointer->getType() == LexemType::CELL_REFERENCE) {
+                new_expression.pushLexem(std::make_shared<LexemNumber>(getProcessedArithmeticExpressionValue(referred_expression)));
 
-                    auto referred_coordinate = dynamic_cast<LexemCellReference*>(lexem_pointer.get())->getCoordinate();
-                    const auto &referred_expression = table(referred_coordinate);
-                    if (visited_coordinates.count(referred_coordinate) == 0 && referred_expression.getType() == ExpressionType::ARITHMETIC) {
-                        calculateCell(table, visited_coordinates, referred_coordinate);
-                    }
-                    lexem_value = getProcessedArithmeticExpressionValue(referred_expression);
-
-                } else if (lexem_pointer->getType() == LexemType::NUMBER) {
-                    lexem_value = dynamic_cast<LexemNumber*>(lexem_pointer.get())->getNumber();
-                } else {
-                    throw std::invalid_argument("Unimplemented lexem type");
-                }
-
-                if (!is_result_defined) {
-                    result = lexem_value;
-                    is_result_defined = true;
-                } else {
-                    result = last_operation->getAction()(result, lexem_value);
-                }
-
-            } else {     // Operation is needed
-
-                if (lexem_pointer->getType() != LexemType::OPERATION) {
-                    throw std::invalid_argument("Operation in wrong place");
-                }
-                last_operation = std::make_shared<LexemOperation>(dynamic_cast<LexemOperation*>(lexem_pointer.get())->getOperation());
-
-            }
-
-            last_lexem_type = lexem_pointer->getType();
-        }
-
-        if (last_lexem_type == LexemType::OPERATION) {
-            if (expression.getSize()) {
-                throw std::invalid_argument("Excess operation in the end");
             } else {
-                throw std::invalid_argument("Empty expression");
+
+                new_expression.pushLexem(lexem_pointer);
+
             }
         }
 
-        expression = Expression(ExpressionType::ARITHMETIC);
-        expression.pushLexem(std::make_shared<LexemNumber>(result));
+        current_expression = Expression(ExpressionType::ARITHMETIC);
+        current_expression.pushLexem(std::make_shared<LexemNumber>(calculateArithmeticExpression(new_expression)));
 
     } catch (const std::exception &exception) {
-        expression = makeErrorExpression(exception.what());
+        current_expression = makeErrorExpression(exception.what());
     }
-
 }
 
 
