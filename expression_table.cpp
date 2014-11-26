@@ -143,7 +143,11 @@ void calculateCell(ExpressionTable &table, std::set<Coordinate2D> &visited_coord
         }
 
         if (last_lexem_type == LexemType::OPERATION) {
-            throw std::invalid_argument("Excess operation in the end");
+            if (expression.getSize()) {
+                throw std::invalid_argument("Excess operation in the end");
+            } else {
+                throw std::invalid_argument("Empty expression");
+            }
         }
 
         expression = Expression(ExpressionType::ARITHMETIC);

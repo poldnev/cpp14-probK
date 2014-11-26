@@ -1,5 +1,4 @@
-4	4
-=1+9	=A2	'	=0
-=8*1+C3		=B3+B1+B3
-0	=A2+A1	=1+2*3/4-5*C2+100	'
-=A1/0+9	= 6	''	6+1
+5	2	trailing trash
+12	=C2	3	'Sample
+=A1+B1*C1/5	=A2*B1	=B3-C3	'Spread
+'Test	=4-3	5	'Sheet
